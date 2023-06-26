@@ -81,10 +81,12 @@ public partial class ColegioPruebaContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Nombres)
                 .HasMaxLength(30)
-                .IsUnicode(false);
+                .IsUnicode(false)
+                .HasColumnName("Nombres");
             entity.Property(e => e.Observaciones)
                 .HasMaxLength(100)
-                .IsUnicode(false);
+                .IsUnicode(false)
+                .HasColumnName("Observaciones");
 
             entity.HasOne(d => d.CiTutorNavigation).WithMany(p => p.Alumnos)
                 .HasForeignKey(d => d.CiTutor)

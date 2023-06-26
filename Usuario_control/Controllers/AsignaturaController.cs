@@ -9,91 +9,90 @@ using Usuario_control.Models;
 
 namespace Usuario_control.Controllers
 {
-    public class AlumnoController : Controller
+    public class AsignaturaController : Controller
     {
         private readonly ColegioPruebaContext _context;
 
-        public AlumnoController(ColegioPruebaContext context)
+        public AsignaturaController(ColegioPruebaContext context)
         {
             _context = context;
         }
 
-        // GET: Alumno
+        // GET: Asignatura
         public async Task<IActionResult> Index()
         {
-            var colegioPruebaContext = _context.Alumnos.Include(a => a.CiTutorNavigation);
+            var colegioPruebaContext = _context.Asignaturas.Include(a => a.IdCursoNavigation);
             return View(await colegioPruebaContext.ToListAsync());
         }
 
-        // GET: Alumno/Details/5
+        // GET: Asignatura/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null || _context.Alumnos == null)
+            if (id == null || _context.Asignaturas == null)
             {
                 return NotFound();
             }
 
-            var alumno = await _context.Alumnos
-                .Include(a => a.CiTutorNavigation)
-                .FirstOrDefaultAsync(m => m.Ci == id);
-            if (alumno == null)
+            var asignatura = await _context.Asignaturas
+                .Include(a => a.IdCursoNavigation)
+                .FirstOrDefaultAsync(m => m.Codigo == id);
+            if (asignatura == null)
             {
                 return NotFound();
             }
 
-            return View(alumno);
+            return View(asignatura);
         }
 
-        // GET: Alumno/Create
+        // GET: Asignatura/Create
         public IActionResult Create()
         {
-            ViewData["CiTutor"] = new SelectList(_context.Tutors, "Ci", "Ci");
+            ViewData["IdCurso"] = new SelectList(_context.Cursos, "Id", "Id");
             return View();
         }
 
-        // POST: Alumno/Create
+        // POST: Asignatura/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Ci,Nombres,ApellidoP,ApellidoM,FechaNac,Genero,AnoIngreso,Observaciones,CiTutor")] Alumno alumno)
+        public async Task<IActionResult> Create([Bind("Codigo,Nombre,Descripcion,IdCurso")] Asignatura asignatura)
         {
-            //if (ModelState.IsValid)
-            //{
-                _context.Add(alumno);
+            if (ModelState.IsValid)
+            {
+                _context.Add(asignatura);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            //}
-
-            //ViewData["CiTutor"] = new SelectList(_context.Tutors, "Ci", "Ci", alumno.CiTutor);
-            //return View(alumno);
+            }
+            ViewData["IdCurso"] = new SelectList(_context.Cursos, "Id", "Id", asignatura.IdCurso);
+            return View(asignatura);
         }
 
-        // GET: Alumno/Edit/5
+        // GET: Asignatura/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null || _context.Alumnos == null)
+            if (id == null || _context.Asignaturas == null)
             {
                 return NotFound();
             }
 
-            var alumno = await _context.Alumnos.FindAsync(id);
-            if (alumno == null)
+            var asignatura = await _context.Asignaturas.FindAsync(id);
+            if (asignatura == null)
             {
                 return NotFound();
             }
-            ViewData["CiTutor"] = new SelectList(_context.Tutors, "Ci", "Ci", alumno.CiTutor);
-            return View(alumno);
+            ViewData["IdCurso"] = new SelectList(_context.Cursos, "Id", "Id", asignatura.IdCurso);
+            return View(asignatura);
         }
 
-        // POST: Alumno/Edit/5
+        // POST: Asignatura/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Ci,Nombres,ApellidoP,ApellidoM,FechaNac,Genero,AnoIngreso,Observaciones,CiTutor")] Alumno alumno)
+        public async Task<IActionResult> Edit(string id, [Bind("Codigo,Nombre,Descripcion,IdCurso")] Asignatura asignatura)
         {
-            if (id != alumno.Ci)
+            if (id != asignatura.Codigo)
             {
                 return NotFound();
             }
@@ -102,12 +101,12 @@ namespace Usuario_control.Controllers
             {
                 try
                 {
-                    _context.Update(alumno);
+                    _context.Update(asignatura);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AlumnoExists(alumno.Ci))
+                    if (!AsignaturaExists(asignatura.Codigo))
                     {
                         return NotFound();
                     }
@@ -118,51 +117,51 @@ namespace Usuario_control.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CiTutor"] = new SelectList(_context.Tutors, "Ci", "Ci", alumno.CiTutor);
-            return View(alumno);
+            ViewData["IdCurso"] = new SelectList(_context.Cursos, "Id", "Id", asignatura.IdCurso);
+            return View(asignatura);
         }
 
-        // GET: Alumno/Delete/5
+        // GET: Asignatura/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null || _context.Alumnos == null)
+            if (id == null || _context.Asignaturas == null)
             {
                 return NotFound();
             }
 
-            var alumno = await _context.Alumnos
-                .Include(a => a.CiTutorNavigation)
-                .FirstOrDefaultAsync(m => m.Ci == id);
-            if (alumno == null)
+            var asignatura = await _context.Asignaturas
+                .Include(a => a.IdCursoNavigation)
+                .FirstOrDefaultAsync(m => m.Codigo == id);
+            if (asignatura == null)
             {
                 return NotFound();
             }
 
-            return View(alumno);
+            return View(asignatura);
         }
 
-        // POST: Alumno/Delete/5
+        // POST: Asignatura/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (_context.Alumnos == null)
+            if (_context.Asignaturas == null)
             {
-                return Problem("Entity set 'ColegioPruebaContext.Alumnos'  is null.");
+                return Problem("Entity set 'ColegioPruebaContext.Asignaturas'  is null.");
             }
-            var alumno = await _context.Alumnos.FindAsync(id);
-            if (alumno != null)
+            var asignatura = await _context.Asignaturas.FindAsync(id);
+            if (asignatura != null)
             {
-                _context.Alumnos.Remove(alumno);
+                _context.Asignaturas.Remove(asignatura);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AlumnoExists(string id)
+        private bool AsignaturaExists(string id)
         {
-          return (_context.Alumnos?.Any(e => e.Ci == id)).GetValueOrDefault();
+          return (_context.Asignaturas?.Any(e => e.Codigo == id)).GetValueOrDefault();
         }
     }
 }
